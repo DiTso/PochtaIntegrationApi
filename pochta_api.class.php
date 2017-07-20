@@ -39,8 +39,8 @@ class Batch{
 }
 
 class connectorToPochta{
-	static $token = 'YceEJSSPJmoOI6g4omRGcuImEmXuqPp1';
-	static $key = 'b2ZmaWNlQHN0cnVua2kucnU6c3RydW5raTEyMTM=';
+	static $token = '*****';
+	static $key = '****';
 	static $apiurl = 'https://otpravka-api.pochta.ru/1.0/';
 	static $ADDR_qualityCodes = array('GOOD','POSTAL_BOX','ON_DEMAND','UNDEF_05');
 	static $ADDR_qualityCodesInfo = array(
@@ -137,7 +137,7 @@ class connectorToPochta{
 			$data[]=array(
 				"address-type-to"=> $orders_addresses[$i]["address-type"],
 				"area-to"=> $orders_addresses[$i]["area"],
-				"brand-name"=> "СТРУНКИ.РУ",
+				"brand-name"=> "NO NAME",
 				"building-to"=> $orders_addresses[$i]["building"],
 				"corpus-to"=> $orders_addresses[$i]["corpus"],
 				"fragile"=> false,
@@ -186,7 +186,7 @@ class connectorToPochta{
 	static function getBatchZipDocs($batchName){
 		if(empty($batchName)) $batchName=self::$batchName;
 		$res_batch_docs=self::getSslPage('forms/'.$batchName.'/zip-all','',"GET",false);
-		$file_name = dirname(__FILE__).'/pochta_docs/'.$batchName.'.zip';
+		$file_name = dirname(__FILE__).'/'.$batchName.'.zip';
 		file_put_contents($file_name, $res_batch_docs);
 		return $file_name;
 	}

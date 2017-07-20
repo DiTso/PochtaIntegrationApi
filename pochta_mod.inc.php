@@ -1,19 +1,5 @@
 <?
 defined('IN_MANAGER_MODE') or die();
-date_default_timezone_set('Europe/Samara');
-setlocale (LC_ALL, 'ru_RU.UTF-8');
-
-$user=$modx->getLoginUserID();
-$result = $modx->db->select( 'setting_name, setting_value', $modx->getFullTableName('user_settings'), 'user = '.$user.' AND setting_name LIKE "%allowed_shop%"', '', '' );   
-$permissions = $modx->db->makeArray($result);
-if(empty($permissions)){
-	echo '<div class="sectionHeader">Извините, но данный модуль вам недоступен, для получения доступа обратитесь к администратору</div>';
-	exit();
-}
-
-$user_info=$modx->getUserInfo($user);
-$fio=explode(' ',$user_info['fullname']);
-$fam=$fio[count($fio)-1];
 
 $dbname = $modx->db->config['dbase'];
 $dbprefix = $modx->db->config['table_prefix'];
@@ -56,10 +42,10 @@ $tmp_config = $shkm->getModConfig();
 extract($tmp_config);
 $shk_table = $modx->getFullTableName('manager_shopkeeper');
 
-function send_smsc($data,$close_smsc=false){
+function send_smsc($data,$close_smsc=true){
 		if($close_smsc) return;
-		$lSMS = 'strunki';
-		$pSMS = 'varvara0511';
+		$lSMS = '****';
+		$pSMS = '****';
 		$postdata = http_build_query(
 					array(
 						'login'=>$lSMS,
@@ -67,7 +53,7 @@ function send_smsc($data,$close_smsc=false){
 						'phones' => $data["phones"],
 						'mes' => $data["mes"],
 						'id' => '',
-						'sender' => 'Strunki.ru',
+						'sender' => 'Sender',
 						'time' => 0,
 						'charset' => 'utf-8'
 					)
@@ -86,8 +72,7 @@ function send_smsc($data,$close_smsc=false){
 }
 	
 
-$type_id=$_GET["item_type"];
-//if(!empty($type_id) && !in_array($type_id,array(2,4,5,6))) exit();		
+$type_id=$_GET["item_type"];	
 
 require_once SHOPKEEPER_PATH."plugins/pochta/pochta_api.class.php";
 
@@ -402,19 +387,8 @@ switch($action){
 	default:
 }
 
+//Фильтрация заказов по статусу
 $fcount="status = 8";
-if(!empty($type_id)){
-	$fcount.=" AND is_zakazn IN (".$type_id.")";
-	if($type_id==2 && isset($_GET["weight"])){
-		if($_GET["weight"]==1){
-			$fcount.=" AND weight>=100";
-		}else if($_GET["weight"]==0){
-			$fcount.=" AND weight<100";
-		}
-	}
-}else{
-	$fcount.=" AND is_zakazn IN(2,4,5,6)";
-}
 
   include "templates/header.tpl.php";	
   //echo "SELECT COUNT(*) FROM $shkm->mod_table WHERE ".$fcount;
@@ -520,14 +494,6 @@ if(!empty($error_text))
 <!-- \\\tab content 1\\\ -->
 <div class="tab-page" <?if($_GET["tab"]==2):?>style="display:none;"<?endif;?>>
 	<div style="padding:20px;">
-		<ul class="actionButtons">
-				<li><a style="background: red url(images/misc/button-gradient.png) repeat-x top left;" href="<?=$mod_page;?>&item_type=4&tab=1">Обыкновенные</a></li>
-                <li><a style="background: blue url(images/misc/button-gradient.png) repeat-x top left;" href="<?=$mod_page;?>&item_type=5&tab=1">Наложки</a></li>
-				 <li><a style="background: #377796 url(images/misc/button-gradient.png) repeat-x top left;" href="<?=$mod_page;?>&item_type=4,5&tab=1">Ценные</a></li>
-                <li><a style="background: yellow url(images/misc/button-gradient.png) repeat-x top left;" href="<?=$mod_page;?>&item_type=2&weight=0&tab=1">Заказные письма</a></li>
-                <li><a style="background: green url(images/misc/button-gradient.png) repeat-x top left;" href="<?=$mod_page;?>&item_type=2&weight=1&tab=1">Заказные бандероли</a></li>
-				<li><a style="background: white url(images/misc/button-gradient.png) repeat-x top left;" href="<?=$mod_page;?>&item_type=6&tab=1">EMS</a></li>
-        </ul>
         <ul class="actionButtons">
 				<li><a href="javascript://" onclick="postFormCreate()";>Создать партию</a> <input type="date" id="sdate" value="<?=date("Y-m-d",time()+24*60*60);?>"/></li>
         </ul>   
