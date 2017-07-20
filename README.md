@@ -1,5 +1,5 @@
 # PochtaIntegrationApi
-API для интеграции MODx Evo с Почтой России, будет расширяться и дорабатываться под MODx Revo
+API для интеграции MODx Evo ShopKeeper с Почтой России, будет расширяться и дорабатываться под MODx Revo
 Настроен основной функционал из пакета по оформлению документов
 https://otpravka.pochta.ru/specification#/flow
 
